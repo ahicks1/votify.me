@@ -1,0 +1,27 @@
+{
+    "query":{
+      "TableName": "MopekaData",
+      "KeyConditionExpression": "#M = :v1",
+      "ScanIndexForward":false,
+      "FilterExpression":"Button = :vTrue"
+      "Limit":5,
+
+      "ExpressionAttributeValues": {
+          ":v1": {"S": "$input.params('mac-address')"},
+          ":vTrue": {"N": "1"}
+      },
+      "ExpressionAttributeNames": {
+          "#M":"MAC"
+      }
+    },
+    "putItem":{
+
+    "TableName": "MopekaGW",
+      "Item": {
+          "Username":{"S":"$context.authorizer.claims.sub"},
+          "Address":{"S":$input.json('$.address')},
+          "FriendlyName":{"S":$input.json('$.name')},
+          "ModelNumber":{"N":"$input.json('$.modelNumber')"}
+      }
+    }
+}

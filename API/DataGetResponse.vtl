@@ -1,0 +1,17 @@
+#set($inputRoot = $input.path('$'))
+{
+  "data" : [
+#foreach($elem in $inputRoot.Items)
+ {
+    "time" : $elem.Timestamp.N,
+    "lgpLevel" : $elem.Value.N
+    #if($elem.BatteryLevel.N != ""),"voltage": $elem.BatteryLevel.N#end
+    #if($elem.Quality.N != ""),"quality": $elem.Quality.N#end
+    #if($elem.Temp.N != ""),"temperature": $elem.Temp.N#end
+    #if($elem.Button.N != ""),"syncButtonState": $elem.Button.N#end
+    #if($elem.RawLevel.N != ""),"rawLevel": $elem.RawLevel.N#end
+  }
+#if($foreach.hasNext),#end
+#end
+]
+}

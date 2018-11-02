@@ -1,0 +1,17 @@
+{
+    "type": "object",
+    "title": "The Root Schema",
+    "required": [
+      "data"
+    ],
+    "properties": {
+      "data": {
+        "type": "array",
+        "title": "The Devices Schema",
+        "items": {
+            "$ref":"https://apigateway.amazonaws.com/restapis/sdllzocmni/models/Data"
+          
+        }
+      }
+    }
+  }

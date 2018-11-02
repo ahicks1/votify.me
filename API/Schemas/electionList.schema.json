@@ -1,0 +1,14 @@
+{
+    "definitions": {},
+    "type":"object",
+    "properties": {
+        "elections": {
+            "type": "array",
+            "title": "Election List",
+            "description": "A list of elections a user has created",
+            "items": {
+                "$ref":"https://apigateway.amazonaws.com/restapis/pvyeeoatp7/models/Election"
+            }
+        }
+    } 
+}

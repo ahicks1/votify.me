@@ -1,0 +1,28 @@
+{
+    "type": "object",
+    "properties": {
+      "results": {
+        "type": "array",
+        "title": "Election Result",
+        "description": "Candidates and their associated vote count",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Candidate Name"
+            },
+            "votes": {
+              "type": "integer",
+              "title": "Vote Count"
+            }
+          }
+        }
+      },
+      "vote-count": {
+          "type":"integer",
+          "title":"Total Vote Count",
+          "description": "The count of total votes used to calculate this vote count"
+      }
+    }
+  }

@@ -1,0 +1,27 @@
+{
+    "definitions": {},
+   "type": "object",
+   "title": "The Root Schema",
+   "required": [
+     "address",
+     "name",
+     "modelNumber"
+   ],
+   "properties": {
+     "address": {
+       "type": "string",
+       "title": "The Address Schema",
+     "pattern": "^([A-F0-9]){12}$"
+     },
+     "name": {
+      "type": "string",
+      "title": "The Friendlyname Schema",
+      "default": "",
+      "pattern": "^(.*)$"
+    },
+     "modelNumber": {
+      "type": "number",
+      "title": "The Friendlyname Schema"
+    }
+    }
+ }

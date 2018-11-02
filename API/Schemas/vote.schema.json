@@ -1,0 +1,13 @@
+{
+    "type": "array",
+    "title": "Vote Candidates",
+    "description": "An ordered list of candidates",
+    "required": [
+        "items"
+    ],
+    "items": {
+        "type": "string",
+        "title": "Candidate",
+        "description": "A string representing a candidate"
+    }
+}

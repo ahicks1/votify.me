@@ -1,0 +1,51 @@
+{
+   "definitions": {},
+   "type": "object",
+   "title": "The Election Schema",
+   "description": "A schema representing an election",
+   "required": [
+     "name",
+     "candidates"
+   ],
+   "properties": {
+    "id": {
+       "type": "string",
+       "title": "Election ID",
+       "description": "The randomly generated id of the election"
+     },
+    "creator": {
+      "type": "string",
+      "title": "Election Creator",
+      "description": "The user id of the creator of the election"
+    },
+    "name": {
+        "type": "string",
+        "title": "Election Name",
+         "description": "The human readable name of the election"
+    },
+    "active": {
+        "type": "boolean",
+        "title": "Election Active Flag",
+         "description": "Whether or not the election is accepting votes"
+    },
+    "candidates": {
+        "type": "array",
+          "title": "Election Candidates",
+          "items": {
+            "type": "string",
+            "title": "Candidate",
+            "description": "A string representing a candidate"
+          }
+    },
+    "time": {
+        "type": "number",
+        "title": "Creation Timestamp",
+         "description": "Timestamp in milliseconds (UTC)"
+    },
+    "secure": {
+        "type": "boolean",
+        "title": "Election Secured Flag",
+        "description": "Whether or not unauthenticated votes are allowed"
+    }
+    }
+ }

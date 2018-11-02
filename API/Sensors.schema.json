@@ -1,0 +1,17 @@
+{
+    "type": "object",
+    "title": "The Root Schema",
+    "required": [
+      "devices"
+    ],
+    "properties": {
+      "devices": {
+        "type": "array",
+        "title": "The Devices Schema",
+        "items": {
+            "$ref":"https://apigateway.amazonaws.com/restapis/sdllzocmni/models/Sensor"
+          
+        }
+      }
+    }
+  }

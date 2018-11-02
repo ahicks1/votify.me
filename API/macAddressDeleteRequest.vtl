@@ -1,0 +1,11 @@
+{
+    "TableName": "MopekaGW",
+    "Key": {
+        "Username": {
+            "S": "$context.authorizer.claims.sub"
+        },
+        "Address": {
+            "S": "$input.params('mac-address')"
+        }
+    }
+}

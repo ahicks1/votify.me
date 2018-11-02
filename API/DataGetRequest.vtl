@@ -1,0 +1,26 @@
+#set($allParams = $input.params())
+#set($before = $input.params('before'))
+#set($after = $input.params('after'))
+{
+    "getItem":{
+        "TableName": "MopekaGW",
+        "Key": {
+          "Username":{"S":"$context.authorizer.claims.sub"},
+          "Address":{"S":"$input.params('mac-address')"}
+        }
+    },
+    "query":{
+      "TableName": "MopekaData",
+      "KeyConditionExpression": "#M = :v1#if($before != "" && $after != "") AND #T BETWEEN :v3 AND :v3#elseif($before != "") AND #T <= :v2#elseif($after != "") AND #T >= :v3#end",
+      "ScanIndexForward":false,
+      "Limit":#if($input.params('limit') != "")$input.params('limit')#{else}1#end,
+
+      "ExpressionAttributeValues": {
+          ":v1": {"S": "$input.params('mac-address')"}#if($before != ""),":v2": {"N": "$before"}#end#if($after != ""),":v3": {"N": "$after"}#end
+      },
+      "ExpressionAttributeNames": {
+          "#M":"MAC"
+          #if($before != "" || $after != ""),"#T": "Timestamp"#end
+      }
+    }
+}

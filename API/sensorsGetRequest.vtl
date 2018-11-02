@@ -1,0 +1,9 @@
+#set($allParams = $input.params())
+{
+
+    "TableName": "MopekaGW",
+    "KeyConditionExpression": "Username = :v1",
+    "ExpressionAttributeValues": {
+        ":v1": {"S": "$context.authorizer.claims.sub"}
+    }
+}

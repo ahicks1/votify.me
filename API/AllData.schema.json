@@ -1,0 +1,28 @@
+{
+    "definitions": {},
+    "type": "array",
+    "title": "Results",
+    "items": {
+      "type": "object",
+      "title": "ResultsObject",
+      "required": [
+        "address",
+        "data"
+      ],
+      "properties": {
+        "address": {
+          "type": "string",
+          "title": "The Mac address",
+          "pattern": "^([A-F0-9]){12}$"
+        },
+        "data": {
+          "$id": "#/items/properties/data",
+          "type": "array",
+          "title": "The Data Schema",
+          "items": {
+            "$ref":"https://apigateway.amazonaws.com/restapis/sdllzocmni/models/Data"
+          }
+        }
+      }
+    }
+  }

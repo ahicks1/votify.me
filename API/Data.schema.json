@@ -1,0 +1,39 @@
+{
+    "definitions": {},
+   "type": "object",
+   "title": "The Root Schema",
+   "required": [
+     "time",
+     "lpgLevel"
+   ],
+   "properties": {
+     "time": {
+       "type": "number",
+       "description": "The time of the event in UTC milliseconds"
+     },
+     "lpgLevel": {
+      "type": "number",
+      "description": "The height in meters of LPG measured inside the tank. This uses the scaling performed by the official Mopeka app. If custom calibration or adjustments are desired, use the rawLevel parameters instead of adjusting this lpgLevel parameter"
+    },
+    "voltage": {
+        "type": "number",
+         "description": "Voltage of the sensor’s battery. It is normal for the battery to start at about 3.1V and then quickly drop to around 2.8V, where it will then slowly decay to around 2.25V. Cold weather will temporarily cause the voltage to drop as well."
+    },
+    "quality": {
+        "type": "number",
+         "description": "A proprietary quality metric that is used by the sensor algorithm for attempting to detect how strong or reliable of a signal reading is being measured. The Mopeka app uses 0-5 for 0 stars, 5-15 for 1 star, 15-30 for 2 stars, and 30+ for 3 quality stars"
+    },
+    "syncButtonState": {
+        "type": "number",
+         "description": "True if the SYNC button is currently pressed"
+    },
+    "rawLevel": {
+        "type": "number",
+         "description": "This is the tank level that is proportional to the measured fluid level inside the tank. It will span up to 255, which indicates the max height the sensor can read"
+    },
+    "temperature": {
+        "type": "number",
+         "description": "The temperature from the onboard temperature sensor"
+    }
+    }
+ }

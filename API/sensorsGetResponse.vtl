@@ -1,0 +1,13 @@
+#set($inputRoot = $input.path('$'))
+{
+  "devices" : [
+#foreach($elem in $inputRoot.Items)
+ {
+    "address" : "$elem.Address.S",
+    "name" : "$elem.FriendlyName.S",
+    "modelNumber":$elem.ModelNumber.N
+  }
+#if($foreach.hasNext),#end
+#end
+]
+}

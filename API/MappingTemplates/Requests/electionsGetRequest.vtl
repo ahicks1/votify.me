@@ -1,0 +1,10 @@
+#set($allParams = $input.params())
+{
+
+    "TableName": "MopekaData",
+    "IndexName": "byUser",
+    "KeyConditionExpression": "user_id = :v1",
+    "ExpressionAttributeValues": {
+        ":v1": {"S": "$context.authorizer.claims.sub"}
+    }
+}
