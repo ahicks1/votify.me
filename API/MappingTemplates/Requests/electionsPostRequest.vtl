@@ -6,9 +6,10 @@
           "poll_id":{"S":"ADD_NEW_ID_HERE"},
           "user_id":{"S":"$context.authorizer.claims.sub"},
           "poll_name":{"S":$input.json('$.name')},
-          "active":{"BOOL":$input.json('$.address')},
-          "create_time":{"N":$input.json('$.name')},
-          "secure":{"BOOL":$input.json('$.modelNumber')},
-          "candidates":{"SS":$input.json('$.name')},
+          "active":{"BOOL":true},
+          "create_time":{"N":"123456789"},
+          "secure":{"BOOL":false},
+          "candidates":{"SS":$input.json('$.candidates')}
       }
     }
+}

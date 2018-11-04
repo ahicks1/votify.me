@@ -1,0 +1,28 @@
+#set($inputRoot = $input.path('$'))
+{
+    
+    "getItem":{
+        "TableName": "OrecData",
+        "KeyConditionExpression": "poll_id = :v1",
+        "ExpressionAttributeValues": {
+            ":v1": {"S": "$input.params('election-id')"}
+        },
+        "Limit":1
+    },
+    "putItem":{
+
+    "TableName": "OrecData",
+      "Item": {
+          "poll_id":{"S":"sub_$input.params('election-id')"},
+          "user_id":{"S":"sub_auth_"},
+          "create_time":{"N":"123456789"},
+          "candidates":{"SS":$input.json('$.items')},
+          "sub":{"L": [
+            #foreach($c in $inputRoot.items)
+            {"S":"$c"}#if($foreach.hasNext),#end
+            #end
+            ]
+        }
+      }
+    }
+}

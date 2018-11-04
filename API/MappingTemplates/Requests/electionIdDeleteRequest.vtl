@@ -1,0 +1,10 @@
+#set($allParams = $input.params())
+{
+
+    "TableName": "OrecData",
+    "Key": {
+        "user_id": {"S": "$context.authorizer.claims.sub"},
+        "poll_id": {"S": "$input.params('election-id')"}
+    },
+    "ReturnValues":"ALL_OLD"
+}

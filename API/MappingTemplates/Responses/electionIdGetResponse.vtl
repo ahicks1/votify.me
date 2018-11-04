@@ -1,8 +1,7 @@
 #set($inputRoot = $input.path('$'))
 {
-  "elections" : [
-#foreach($elem in $inputRoot.Items)
- {
+#set($elem = $inputRoot.Items[0])
+ 
     "id" : "$elem.poll_id.S",
     "name" : "$elem.poll_name.S",
     "active": $elem.active.BOOL,
@@ -13,8 +12,4 @@
         "$c"#if($foreach.hasNext),#end
         #end
     ]
-  }
-#if($foreach.hasNext),#end
-#end
-]
 }

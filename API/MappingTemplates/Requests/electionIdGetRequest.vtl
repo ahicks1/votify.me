@@ -1,0 +1,10 @@
+#set($allParams = $input.params())
+{
+
+    "TableName": "OrecData",
+    "KeyConditionExpression": "poll_id = :v1",
+    "ExpressionAttributeValues": {
+        ":v1": {"S": "$input.params('election-id')"}
+    },
+    "limit":1
+}

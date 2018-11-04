@@ -1,0 +1,19 @@
+#set($inputRoot = $input.path('$'))
+{  
+    "getElection":{
+        "TableName": "OrecData",
+        "KeyConditionExpression": "poll_id = :v1 AND user_id = :v2",
+        "ExpressionAttributeValues": {
+            ":v1": {"S": "$input.params('election-id')"},
+            ":v2": {"S": "$context.authorizer.claims.sub"}
+        }
+    },
+
+    "query":{
+        "TableName": "OrecData",
+        "KeyConditionExpression": "poll_id = :v1",
+        "ExpressionAttributeValues": {
+            ":v1": {"S": "sub_$input.params('election-id')"}
+        }
+    }
+}
