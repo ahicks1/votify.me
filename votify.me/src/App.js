@@ -3,8 +3,12 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import Amplify from 'aws-amplify';
 import { withAuthenticator, Authenticator } from 'aws-amplify-react';
 import './App.css';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import ElectionsPage from './ElectionsPage'
 import ResultsPage from './ResultsPage'
+import AddElectionPage from './AddElectionPage'
+import VotePage from './VotePage'
 
 Amplify.configure({
   Auth: {
@@ -27,18 +31,35 @@ class App extends React.Component {
   
         <Route exact path="/" component={Home} />
         <Route path="/elections" component={ElectionsNav} />
-        <Route path="/add-election" component={AddElectionPage} />
+        <Route path="/add-election" component={AddElectionAuth} />
+        <Route path="/vote" component={VoteNav} />
       </div>
     </Router>
   };
 } 
 
 class Home extends React.Component { 
+  constructor(props) {
+    super(props);
+    this.state = {code:""}
+
+  }
+  
   render(){
-    return <h2>Home</h2>;
+    return <div><h2>Home</h2>
+    <TextField label="Election Name:" onChange={e => this.setState({code:e.target.value})} value={this.state.code}/>
+    <div><Button component={Link} to={`/vote/${this.state.code}`}>
+      Link
+    </Button></div>
+    </div>;
   } 
 }
 
+const AddElectionAuth = (props) => {
+  return <Authenticator>
+    <AddElectionPage {...props}/>
+  </Authenticator>;
+}
 
 const ElectionsAuth = (props) => {
   return <Authenticator>
@@ -52,6 +73,18 @@ const ResultsAuth = (props) => {
   </Authenticator>;
 }
 
+
+const VoteNav = (props) => {
+  return <div>
+    
+    <Route path={`${props.match.path}/:id`} render= {(p) => <VotePage {...p}/>} />
+    <Route
+      exact
+      path={props.match.path}
+      render={() => <ElectionsAuth {...props}/>}
+    />
+    </div>;
+}
 const ElectionsNav = (props) => {
   return <div>
     
@@ -72,16 +105,8 @@ class Topic extends React.Component{
     console.log(JSON.stringify(props))
   }
   render() {return <h3>Requested Param: {this.props.match.params.id}</h3>;}
-}
-const AddElectionPage = ({ match }) => (
-  <div>
-    <Authenticator>
-    <h2>Create Election</h2>
+};
 
-    
-    </Authenticator>
-  </div>
-);
 const Header = () => (
   <ul>
     <li>
