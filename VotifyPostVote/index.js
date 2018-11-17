@@ -43,8 +43,8 @@ exports.handler = (event, context, callback) => {
                 if(sub.secure.BOOL) throw new Error("Cant submit open vote for secure election");
                 newItem.Item.user_id.S = `sub_anon_${sub_id}`;
             };
-            console.log(sub.candidates.SS);
-            console.log(currSub);
+            console.log(`Candidates: ${sub.candidates.SS}`);
+            console.log(`Submission: ${currSub}`);
             if (sub.candidates.SS.length === currSub.length 
                 && sub.candidates.SS.every(value=> currSub.includes(value))
             ) return putItemPromise(newItem);
