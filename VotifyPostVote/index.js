@@ -40,7 +40,7 @@ exports.handler = (event, context, callback) => {
             let sub = res.Items[0]
             let currSub = newItem.Item.candidates.SS;
             if(newItem.Item.user_id.S === "sub_auth_") {
-                if(sub.secure.BOOL) throw new Error("Cant submit open vote for secure election");
+                if(sub.secure.BOOL) throw new Error("401: Cant submit open vote for secure election");
                 newItem.Item.user_id.S = `sub_anon_${sub_id}`;
             };
             console.log(`Candidates: ${sub.candidates.SS}`);
