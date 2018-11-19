@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { ResponsiveBar } from '@nivo/bar'
+
+import Typography from '@material-ui/core/Typography'
+
 const rp = require('request-promise-native')
 
 const pStyle = {}
@@ -77,10 +80,9 @@ class ResultsPage extends React.Component{
   
       
       return <div>
-        <h2>Election</h2>
-        <h3>Requested Param: {this.props.match.params.id}</h3>
-        <div>
-        {this.state.data && <div>{JSON.stringify(this.state.data)}<Plot data={this.state.data.results} keys={this.state.data.results.map(e => e.name)}/></div>}</div>
+        <Typography variant="h2" gutterBottom>Election</Typography>
+        
+        {this.state.data && <Plot data={this.state.data.results} keys={this.state.data.results.map(e => e.name)}/>}
         </div>;
     }
   }

@@ -1,6 +1,30 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-const rp = require('request-promise-native')
+
+
+import { withStyles } from '@material-ui/core/styles';
+
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+import LinkIcon from '@material-ui/icons/Link'
+import HowToVoteIcon from '@material-ui/icons/HowToVote'
+
+const rp = require('request-promise-native');
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  }
+});
 
 const ElectList = (props) => {
     console.log(JSON.stringify(props));
@@ -10,6 +34,70 @@ const ElectList = (props) => {
     return <ul>
        {listItems}
     </ul>
+}
+
+const InitialItem = ({value, idx, click}) => <ListItem button onClick ={click}><ListItemText primary={value} /></ListItem>
+
+
+const InitialList = ({elections, handleClick}) => {
+  return (
+    <List>
+      {elections.map((value, index) => (
+        <ListItem key={index} button onClick ={() => handleClick(index.id)}><ListItemText primary={value.name} /></ListItem>
+      ))}
+    </List>
+  );
+};
+
+class ElectionItem extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      linkActive:false
+    }
+  }
+
+  flipActive() {
+
+    let {linkActive} = this.state;
+    this.setState({linkActive:!linkActive})
+  }
+
+  turnOff() {
+    this.setState({linkActive:false})
+  }
+
+
+  render() {
+    let {id,name} = this.props;
+    let {host} = window.location;
+
+    let field = <ClickAwayListener onClickAway={this.turnOff.bind(this)}><TextField
+          id="standard-read-only-input"
+          defaultValue={`${host}/vote/${id}`}
+          InputProps={{
+            readOnly: true,
+          }}
+          inputRef={input => {if(input) {input.focus(); input.select()}}}
+        /></ClickAwayListener>
+    
+
+    return <ListItem button divider component={Link} to={`elections/${id}`}>
+    <ListItemText primary={name} />
+    <ListItemSecondaryAction>
+    {this.state.linkActive && field}
+    
+      <IconButton aria-label="Vote Link" onClick={this.flipActive.bind(this)}>
+        <LinkIcon />
+      </IconButton>
+      <IconButton aria-label="Vote" component={Link} to={`vote/${id}`}>
+        <HowToVoteIcon />
+      </IconButton>
+      
+      
+    </ListItemSecondaryAction>
+  </ListItem>
+  }
 }
 
 class ElectionsPage extends React.Component{ 
@@ -45,16 +133,26 @@ class ElectionsPage extends React.Component{
       
       
     }
+    handleClick(id) {
+      this.props.history.push(`elections/${id}`)
+    }
     render(){
-  
+      const { classes } = this.props;
+      if(!this.state.data) return <div><LinearProgress style={{margin:100}}/></div>;
+
       
-      return <div>
-        <h2>Elections</h2>
-        <div>
-        {this.state.data && <div> <ElectList {...this.state.data} /> </div>}</div>
+      const {elections} = this.state.data
+      const list = <List>{ elections.map((item, index) =>
+        <ElectionItem style={{padding:25}} key={index} {...item}/>
+      )}
+      </List> 
+      return <div className={classes.root}>
+            <Typography variant="h2" gutterBottom>Your Elections:</Typography>
+        
+            {this.state.data && list}
         </div>;
     }
   }
 
 
-export default ElectionsPage;
+export default withStyles(styles)(ElectionsPage);

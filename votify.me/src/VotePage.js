@@ -4,6 +4,7 @@ import {SortableContainer, SortableElement,
   SortableHandle, arrayMove} from 'react-sortable-hoc';
 import { withAuthenticator, Authenticator } from 'aws-amplify-react';
 
+import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
@@ -37,12 +38,12 @@ function ordinal_suffix_of(i) {
 const DragHandle = SortableHandle(() => <DragIcon></DragIcon>);
 
 const SortableItem = SortableElement(({value, idx}) =>
-  <Paper style={{marginTop:15}}><ListItem ><DragHandle /><ListItemText primary={value} /></ListItem></Paper>
+  <Paper style={{margin:15}}><ListItem ><DragHandle /><ListItemText primary={value} /></ListItem></Paper>
 );
 
 const SortableList = SortableContainer(({items}) => {
   return (
-    <List style={{maxHeight: '50vh', overflow: 'scroll'}}>
+    <List  style={{maxHeight: '50vh', overflow: 'scroll'}}>
       {items.map((value, index) => (
         <SortableItem key={`item-${index}`} index={index} idx={index} value={<div>{value}</div>}/ >
       ))}
@@ -50,14 +51,14 @@ const SortableList = SortableContainer(({items}) => {
   );
 });
 
-const InitialItem = ({value, idx, click}) => <Paper style={{marginTop:15}}><ListItem button onClick ={click}><ListItemText primary={value} /></ListItem></Paper>
+const InitialItem = ({value, idx, click}) => <Paper style={{margin:15}}><ListItem button onClick ={click}><ListItemText primary={value} /></ListItem></Paper>
 
 
 const InitialList = ({items, handleClick}) => {
   return (
     <List style={{maxHeight: '50vh', overflow: 'scroll'}}>
       {items.map((value, index) => (
-        <InitialItem key={`item-${index}`} index={index} idx={index} click={() => handleClick(index)}value={<div>{value}</div>}/ >
+        <InitialItem key={`item-${index}`} index={index} idx={index} click={() => handleClick(index)}value={value}/ >
       ))}
     </List>
   );
@@ -178,7 +179,7 @@ class VoteFlow extends React.Component {
 
 
     return <div>
-    <h2>Vote on {this.props.data.name}</h2>
+    <Typography variant="h2" gutterBottom>Vote on {this.props.data.name}</Typography>
     <div>
     <Stepper activeStep={activeStep}>
       {steps.map((label, index) => {
@@ -295,15 +296,15 @@ class VotePage extends React.Component{
     render(){
 
       if(!this.state.data) {
-        return <div >
-          <h2>Loading {this.props.match.params.id}</h2>
+        return <>
+          <Typography variant="h2" gutterBottom>Loading {this.props.match.params.id}</Typography>
           <LinearProgress />
-        </div>
+        </>
       }
 
       if(this.state.voting) {
         return <div >
-          <h2>Voting for {this.state.data.name}</h2>
+          <Typography variant="h2" gutterBottom>Voting for {this.state.data.name}</Typography>
           <LinearProgress />
         </div>
       }

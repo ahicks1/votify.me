@@ -30,6 +30,16 @@ const ChoiceList = (props) => {
     </ul>
 }
 
+const FinalList = ({items}) => {
+  return (
+    <div>
+      {items.map((value, index) => (
+        <Typography gutterBottom variant="h5" key={`item-${index}`} >#{index+1} - {value}</Typography>
+      ))}
+    </div>
+  );
+};
+
 function getSteps() {
   return ['Select Choices', 'Re-order Candidates', 'Verify'];
 }
@@ -138,7 +148,7 @@ class AddElectionPage extends React.Component{
       const steps = getSteps();
       const { activeStep } = this.state;
       return <div>
-        <h2>Create New Election</h2>
+        <Typography variant="h2" gutterBottom>Create New Election</Typography>
         <div>
         <Stepper activeStep={activeStep}>
           {steps.map((label, index) => {
@@ -166,7 +176,7 @@ class AddElectionPage extends React.Component{
           }
           label="Require sign-in to vote"
         />
-        <FormControlLabel
+        {/**<FormControlLabel
           control={
             <Switch
               checked={this.state.resPublic}
@@ -175,8 +185,8 @@ class AddElectionPage extends React.Component{
               color="primary"
             />
           }
-          label="Public viewing of resuls"
-        />
+          label="Public viewing of results"
+        />*/}
           <Button onClick={this.handleNext} color="primary" >Continue</Button>
           </div>
         }
@@ -193,7 +203,9 @@ class AddElectionPage extends React.Component{
           </div>
         }
         {this.state.activeStep === 2 && <div> 
-          Does this look right?
+          <Typography variant="h4" gutterBottom>Does this look right?</Typography>
+          <Typography variant="h5" gutterBottom>{this.state.name}:</Typography>
+          <FinalList items={this.state.fields}></FinalList>
           <Button onClick={this.handleBack}  >Back</Button><Button onClick={e => this.addElection()} color="primary" >Create Election</Button>
           </div>
         }

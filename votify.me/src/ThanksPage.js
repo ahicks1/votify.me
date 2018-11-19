@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Typography from '@material-ui/core/Typography'
+
 
 
 
@@ -7,10 +9,10 @@ class ThanksPage extends React.Component{
     render(){
   
       
-      return <div>
-        <h2>Thanks for voting!</h2>
+      return <>
+        <Typography variant="h2" gutterBottom>Thanks for voting!</Typography>
         
-        </div>
+        </>
     }
   }
 

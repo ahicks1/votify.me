@@ -5,7 +5,7 @@ import { withAuthenticator, Authenticator } from 'aws-amplify-react';
 import './App.css';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import Grid from '@material-ui/core/Grid';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import TextField from '@material-ui/core/TextField';
 import AppBar from '@material-ui/core/AppBar';
@@ -47,7 +47,7 @@ class App extends React.Component {
   
         <Route exact path="/" component={Home} />
         <Route path="/elections" component={ElectionsNav} />
-        <Route path="/thanks" component={ThanksPage} />
+        <Route path="/thanks" component={ThanksPageGrid} />
         <Route path="/add-election" component={AddElectionAuth} />
         <Route path="/vote" component={VoteNav} />
         <Route path="/sign-in" component={SignInAuth} />
@@ -55,6 +55,18 @@ class App extends React.Component {
     </Router>
   };
 } 
+
+function withGrid(WrappedComponent) {
+    return <div style={{flexGrow:1}}>
+    <Grid container spacing={16} justify="center">
+      <Grid item xs={12} md={8}>
+      {WrappedComponent}
+      </Grid>
+      </Grid>
+      </div>
+}
+
+
 
 class Home extends React.Component { 
   constructor(props) {
@@ -64,13 +76,19 @@ class Home extends React.Component {
   }
   
   render(){
-    return <div><h2>Home</h2>
+    return withGrid(<>
+    <Typography variant="h2" gutterBottom>Welcome to Votify.me</Typography>
     <TextField label="Election Name:" onChange={e => this.setState({code:e.target.value})} value={this.state.code}/>
-    <div><Button component={Link} to={`/vote/${this.state.code}`}>
+    <br/>
+    <Button component={Link} to={`/vote/${this.state.code}`}>
       Link
-    </Button></div>
-    </div>;
+    </Button>
+    </>);
   } 
+}
+
+const ThanksPageGrid = (props) => {
+  return withGrid(<ThanksPage {...props} />)
 }
 const SignInPage = (props) => {
   return <div>{props.authData && <div> <Redirect to='/elections'/> </div>}</div>
@@ -82,28 +100,30 @@ const SignInAuth = (props) => {
 }
 
 const AddElectionAuth = (props) => {
-  return <Authenticator>
+  return withGrid(<Authenticator>
     <AddElectionPage {...props}/>
-  </Authenticator>;
+  </Authenticator>);
 }
 
 const ElectionsAuth = (props) => {
-  return <Authenticator>
+  return withGrid(<Authenticator>
     <ElectionsPage {...props}/>
-  </Authenticator>;
+  </Authenticator>);
 }
 
 const ResultsAuth = (props) => {
-  return <Authenticator>
+  return withGrid(<Authenticator>
     <ResultsPage {...props}/>
-  </Authenticator>;
+  </Authenticator>);
 }
 
 
 const VoteNav = (props) => {
   return <div>
     
-    <Route path={`${props.match.path}/:id`} render= {(p) => <VotePage {...p}/>} />
+    <Route path={`${props.match.path}/:id`} render= {(p) => 
+    
+        withGrid(<VotePage {...p}/>)} />
     <Route
       exact
       path={props.match.path}
@@ -169,10 +189,10 @@ class Header extends React.Component {
       const open = Boolean(anchorEl);
       let auth = false
      
-      return <AppBar position="static" style={{flexGrow:1,width:'100%'}}>
+      return <AppBar elevation="0" color="inherit" position="static" style={{flexGrow:1,width:'100%'}}>
           <Toolbar>
             
-            <Link color='inerit' to="/" style={{color:'white',textDecoration: 'none',flexGrow:1}}><Typography variant="h6" color='inherit' >Votify.me</Typography></Link>
+            <Link color='inerit' to="/" style={{color:'black',textDecoration: 'none',flexGrow:1}}><Typography variant="h6" color='inherit' >Votify.me</Typography></Link>
 
             
                 <div>
@@ -200,8 +220,8 @@ class Header extends React.Component {
                   >
                   
                     
-                    <MenuItem onClick={() => this.handleClose('/elections')}>My Elections</MenuItem>
-                    <MenuItem onClick={() => this.handleClose('/add-election')}>Create New Election</MenuItem>
+                    <MenuItem onClick={this.handleClose} component={Link} to='/elections'>Your Elections</MenuItem>
+                    <MenuItem onClick={this.handleClose} component={Link} to='/add-election'>Create New Election</MenuItem>
                     <MenuItem onClick={this.handleSignOut}>Sign Out</MenuItem>
                     
                     )
