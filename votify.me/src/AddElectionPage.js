@@ -7,6 +7,14 @@ import Divider from '@material-ui/core/Divider';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import Typography from '@material-ui/core/Typography';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -22,18 +30,49 @@ const ChoiceList = (props) => {
     </ul>
 }
 
+function getSteps() {
+  return ['Select Choices', 'Re-order Candidates', 'Verify'];
+}
+
 class AddElectionPage extends React.Component{ 
     constructor(props) {
       super(props)
-      this.state = {name:"",fields:["derp"]}
+      this.state = {
+        name:"",
+        fields:[""],
+        activeStep:0,
+        authVote: false,
+        resPublic: false,
+      }
       //if(this.props.authData) this.updateData()
       this.updateField = this.updateField.bind(this)
+      
     }
-  
+    
+    handleNext = () => {
+      const { activeStep } = this.state;
+      this.setState({
+        activeStep: activeStep + 1,
+      });
+    };
+
+    handleBack = () => {
+      this.setState(state => ({
+        activeStep: state.activeStep - 1,
+      }));
+    };
+    enterHandle(event) {
+      if(event.charCode === 13){
+        event.preventDefault(); // Ensure it is only this code that runs
+        this.addField(event);
+      }
+    }
+
     componentDidUpdate() {
       //if(this.props.authData && this.state.needFetchData) this.updateData()
     }
     addElection() {
+      this.handleNext();
       var options = {
         method:'POST',
         uri: 'https://pvyeeoatp7.execute-api.us-east-1.amazonaws.com/Alpha/elections',
@@ -43,7 +82,8 @@ class AddElectionPage extends React.Component{
         },
         body: {
           name:this.state.name,
-          candidates:this.state.fields
+          candidates:this.state.fields,
+          secure:this.state.authVote
         },
         json: true // Automatically parses the JSON string in the response
       };
@@ -51,6 +91,7 @@ class AddElectionPage extends React.Component{
       .then(data => {
         this.setState({data:data})
         console.log(data)
+        this.props.history.push(`/elections/${data.id}`)
       }).catch(err =>{
         console.log(err)
       })
@@ -65,21 +106,28 @@ class AddElectionPage extends React.Component{
       this.setState({fields:this.state.fields})
     }
     updateField(i,e) {
-      this.state.fields[i] = e.target.value
-      this.setState({fields:this.state.fields})
+      let {fields} = this.state;
+      fields[i] = e.target.value
+      this.setState({fields:fields})
     }
     changeName(e) {
       this.setState({name:e.target.value})
     }
+    handleChange = name => event => {
+      this.setState({ [name]: event.target.checked });
+    };
     
     render(){
+      var last = this.state.fields.length - 1;
       var fieldsComps  = this.state.fields.map((f,i) => {
         return <ListItem key={i} divider>
           <TextField 
             id={`input${i}`}
-            label={`Option ${i}`} 
+            label={`Option ${i+1}`} 
             value={`${f}`}
             onChange={e => this.updateField(i,e)}
+            onKeyPress={e => this.enterHandle(e)}
+            inputRef={input => input && i===last && input.focus()}
               />
           <IconButton onClick={e => this.removeField(i)} aria-label="Add" >
         <DeleteIcon />
@@ -87,20 +135,77 @@ class AddElectionPage extends React.Component{
         
       </ListItem>
       })
-      
+      const steps = getSteps();
+      const { activeStep } = this.state;
       return <div>
         <h2>Create New Election</h2>
         <div>
+        <Stepper activeStep={activeStep}>
+          {steps.map((label, index) => {
+            const props = {};
+            const labelProps = {};
+            return (
+              <Step key={label} {...props}>
+                <StepLabel {...labelProps}>{label}</StepLabel>
+              </Step>
+            );
+          })}
+        </Stepper>
+        {this.state.activeStep === 0 && <div>
+          <Typography variant="subheading">Name your votify poll and set options</Typography>
           <TextField label="Election Name:" onChange={e => this.changeName(e)} value={this.state.name}/>
-        {this.state.data && <div> </div>}</div>
-        <List component="nav">
-        <Divider />
-        {fieldsComps}
-        </List>
-        <IconButton onClick={e => this.addField()} aria-label="Add" color="primary">
-        <AddIcon />
-        </IconButton>
-        <Button onClick={e => this.addElection()} color="primary" >Create Election</Button>
+          <br/>
+          <FormControlLabel
+          control={
+            <Switch
+              checked={this.state.authVote}
+              onChange={this.handleChange('authVote')}
+              value="resPublic"
+              color="primary"
+            />
+          }
+          label="Require sign-in to vote"
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={this.state.resPublic}
+              onChange={this.handleChange('resPublic')}
+              value="resPublic"
+              color="primary"
+            />
+          }
+          label="Public viewing of resuls"
+        />
+          <Button onClick={this.handleNext} color="primary" >Continue</Button>
+          </div>
+        }
+        {this.state.activeStep === 1 && <div> 
+          <Typography variant="subheading">List your options</Typography>
+          <List component="nav">
+            <Divider />
+           {fieldsComps}
+          </List>
+          <IconButton onClick={e => this.addField()} aria-label="Add" color="primary">
+            <AddIcon />
+          </IconButton>
+          <Button onClick={this.handleBack}  >Back</Button><Button onClick={this.handleNext} color="primary" >Continue</Button>
+          </div>
+        }
+        {this.state.activeStep === 2 && <div> 
+          Does this look right?
+          <Button onClick={this.handleBack}  >Back</Button><Button onClick={e => this.addElection()} color="primary" >Create Election</Button>
+          </div>
+        }
+
+        
+        {this.state.activeStep === 3 && <div >
+          <h2>Creating {this.state.name}</h2>
+          <LinearProgress />
+        </div>}
+      
+          
+        </div>
         </div>;
     }
   }
