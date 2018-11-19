@@ -26,7 +26,13 @@ exports.handler = (event, context, callback) => {
     newItem.Item.poll_id.S = id;
     newItem.Item.create_time.N = time.toString();
     putItemPromise(event.putItem).then( (res) => {
-        callback(null, res);
+        let ret = {
+            name:newItem.Item.poll_name.S,
+            id:id,
+            active:true,
+            time:time
+        }
+        callback(null, ret);
     });
         
 };
