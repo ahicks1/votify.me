@@ -51,7 +51,7 @@ class ResultsPage extends React.Component{
     }
   
     componentDidUpdate() {
-      if(this.props.authData && this.state.needFetchData) this.updateData()
+      if(this.props.authData && this.props.authData.getSignInUserSession && this.state.needFetchData) this.updateData()
     }
     updateData() {
       this.setState({needFetchData:false})

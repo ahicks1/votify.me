@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link, withRouter, Redirect } from 'reac
 import Amplify, { Auth } from 'aws-amplify';
 import { withAuthenticator, Authenticator } from 'aws-amplify-react';
 import './App.css';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
@@ -36,12 +37,29 @@ Amplify.configure({
   }
 });
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#8e24aa',
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      main: '#78909c',
+    },
+    error: {
+      main:'#bf360c'
+    }
+    // error: will use the default color
+  },
+});
 
 
 class App extends React.Component {
 
   render() {
-    return <Router>
+    return <MuiThemeProvider theme={theme}><Router>
       <div>
         <AuthHeader />
   
@@ -53,6 +71,7 @@ class App extends React.Component {
         <Route path="/sign-in" component={SignInAuth} />
       </div>
     </Router>
+    </MuiThemeProvider>
   };
 } 
 
@@ -192,15 +211,15 @@ class Header extends React.Component {
       return <AppBar elevation="0" color="inherit" position="static" style={{flexGrow:1,width:'100%'}}>
           <Toolbar>
             
-            <Link color='inerit' to="/" style={{color:'black',textDecoration: 'none',flexGrow:1}}><Typography variant="h6" color='inherit' >Votify.me</Typography></Link>
+            <Link color='inerit' to="/" style={{textDecoration: 'none',flexGrow:1}}><Typography variant="h6" color='secondary' >Votify.me</Typography></Link>
 
             
                 <div>
                   <IconButton
                     aria-owns={open ? 'menu-appbar' : undefined}
                     aria-haspopup="true"
+                    color='secondary'
                     onClick={this.handleMenu}
-                    color="inherit"
                   >
                     <AccountCircle />
                   </IconButton>

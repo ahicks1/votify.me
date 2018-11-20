@@ -43,7 +43,7 @@ const SortableItem = SortableElement(({value, idx}) =>
 
 const SortableList = SortableContainer(({items}) => {
   return (
-    <List  style={{maxHeight: '50vh', overflow: 'scroll'}}>
+    <List  style={{maxHeight: '100vh', overflow: 'scroll'}}>
       {items.map((value, index) => (
         <SortableItem key={`item-${index}`} index={index} idx={index} value={<div>{value}</div>}/ >
       ))}
@@ -56,7 +56,7 @@ const InitialItem = ({value, idx, click}) => <Paper style={{margin:15}}><ListIte
 
 const InitialList = ({items, handleClick}) => {
   return (
-    <List style={{maxHeight: '50vh', overflow: 'scroll'}}>
+    <List style={{height: '70vh', overflow: 'scroll'}}>
       {items.map((value, index) => (
         <InitialItem key={`item-${index}`} index={index} idx={index} click={() => handleClick(index)}value={value}/ >
       ))}
@@ -175,7 +175,7 @@ class VoteFlow extends React.Component {
     const steps = getSteps();
     const { activeStep } = this.state;
 
-    if(this.props.data.secure && ! this.props.authData) return <div></div>
+    if(this.props.data.secure && !(this.props.authData && this.props.authData.getSignInUserSession)) return <div></div>
 
 
     return <div>
@@ -193,20 +193,20 @@ class VoteFlow extends React.Component {
       })}
     </Stepper>
     
-    {this.state.activeStep === 0 && <div>
-      <Typography variant="subheading">Make your {ordinal_suffix_of(this.state.vote.length+1)} place choice:</Typography>
+    {this.state.activeStep === 0 && <>
+      <Typography variant="subheading" >Make your {ordinal_suffix_of(this.state.vote.length+1)} place choice:</Typography>
       <SelectComponent handleClick={this.selectOption.bind(this)}items={this.state.candidates}/>
-      </div>
+      </>
     }
-    {this.state.activeStep === 1 && <div> 
+    {this.state.activeStep === 1 && <> 
       <Typography variant="subheading">Adjust your vote?</Typography>
       <SortableComponent onSortEnd={this.updateCandidates.bind(this)} items={this.state.vote}/> <Button onClick={this.handleNext} color="primary" >Continue</Button>
-      </div>
+      </>
     }
-    {this.state.activeStep === 2 && <div> 
+    {this.state.activeStep === 2 && <> 
       Is this how you want to vote? 
       <FinalList items={this.state.vote}></FinalList><Button onClick={this.handleBack}  >Back</Button><Button onClick={e => this.vote()} color="primary" >Vote</Button>
-      </div>
+      </>
     }
      </div>
     </div>;

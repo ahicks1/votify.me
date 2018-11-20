@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
@@ -75,8 +75,10 @@ class ElectionItem extends React.Component {
     let field = <ClickAwayListener onClickAway={this.turnOff.bind(this)}><TextField
           id="standard-read-only-input"
           defaultValue={`${host}/vote/${id}`}
+          style={{width:225}}
           InputProps={{
             readOnly: true,
+            shrink:true
           }}
           inputRef={input => {if(input) {input.focus(); input.select()}}}
         /></ClickAwayListener>
@@ -87,10 +89,10 @@ class ElectionItem extends React.Component {
     <ListItemSecondaryAction>
     {this.state.linkActive && field}
     
-      <IconButton aria-label="Vote Link" onClick={this.flipActive.bind(this)}>
+      <IconButton color='primary' aria-label="Vote Link" onClick={this.flipActive.bind(this)}>
         <LinkIcon />
       </IconButton>
-      <IconButton aria-label="Vote" component={Link} to={`vote/${id}`}>
+      <IconButton color='primary' aria-label="Vote" component={Link} to={`vote/${id}`}>
         <HowToVoteIcon />
       </IconButton>
       
@@ -109,7 +111,7 @@ class ElectionsPage extends React.Component{
     }
   
     componentDidUpdate() {
-      if(this.props.authData && this.state.needFetchData) this.updateData()
+      if(this.props.authData && this.props.authData.getSignInUserSession && this.state.needFetchData) this.updateData()
     }
     updateData() {
       this.setState({needFetchData:false})
@@ -137,8 +139,10 @@ class ElectionsPage extends React.Component{
       this.props.history.push(`elections/${id}`)
     }
     render(){
-      const { classes } = this.props;
-      if(!this.state.data) return <div><LinearProgress style={{margin:100}}/></div>;
+      
+      const { classes,authData } = this.props;
+      if(!(authData && authData.getSignInUserSession)) return <></>
+      if(!this.state.data) return <><LinearProgress style={{margin:100}}/></>;
 
       
       const {elections} = this.state.data
@@ -147,9 +151,12 @@ class ElectionsPage extends React.Component{
       )}
       </List> 
       return <div className={classes.root}>
-            <Typography variant="h2" gutterBottom>Your Elections:</Typography>
+            <Typography variant="h2" gutterBottom>Your Elections</Typography>
         
             {this.state.data && list}
+            <Button color='primary' component={Link} to={`/add-election`}>
+            Create New
+            </Button>
         </div>;
     }
   }

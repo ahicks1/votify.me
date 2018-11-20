@@ -128,6 +128,9 @@ class AddElectionPage extends React.Component{
     };
     
     render(){
+
+      if(!(this.props.authData && this.props.authData.getSignInUserSession)) return <div></div>
+
       var last = this.state.fields.length - 1;
       var fieldsComps  = this.state.fields.map((f,i) => {
         return <ListItem key={i} divider>
