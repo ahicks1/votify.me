@@ -37,6 +37,12 @@ Amplify.configure({
   }
 });
 
+const ampTheme = {
+  sectionHeader: {},
+  button: { 'backgroundColor': '#8e24aa' },
+  a: {'color':'#8e24aa'}
+}
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -77,7 +83,7 @@ class App extends React.Component {
 
 function withGrid(WrappedComponent) {
     return <div style={{flexGrow:1}}>
-    <Grid container spacing={16} justify="center">
+    <Grid container justify="center">
       <Grid item xs={12} md={8}>
       {WrappedComponent}
       </Grid>
@@ -113,25 +119,25 @@ const SignInPage = (props) => {
   return <div>{props.authData && <div> <Redirect to='/elections'/> </div>}</div>
 }
 const SignInAuth = (props) => {
-  return <Authenticator>
+  return <Authenticator theme={ampTheme}>
     <SignInPage {...props}/>
   </Authenticator>;
 }
 
 const AddElectionAuth = (props) => {
-  return withGrid(<Authenticator>
+  return withGrid(<Authenticator theme={ampTheme}>
     <AddElectionPage {...props}/>
   </Authenticator>);
 }
 
 const ElectionsAuth = (props) => {
-  return withGrid(<Authenticator>
+  return withGrid(<Authenticator theme={ampTheme}>
     <ElectionsPage {...props}/>
   </Authenticator>);
 }
 
 const ResultsAuth = (props) => {
-  return withGrid(<Authenticator>
+  return withGrid(<Authenticator theme={ampTheme}>
     <ResultsPage {...props}/>
   </Authenticator>);
 }

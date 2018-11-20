@@ -3,8 +3,16 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { ResponsiveBar } from '@nivo/bar'
 
 import Typography from '@material-ui/core/Typography'
+import LinearProgress from '@material-ui/core/LinearProgress'
+import IconButton from '@material-ui/core/IconButton'
+
+import RefreshIcon from '@material-ui/icons/Refresh'
 
 const rp = require('request-promise-native')
+
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
 
 const pStyle = {}
 const Plot = (props) => {
@@ -21,8 +29,7 @@ const Plot = (props) => {
             "left": 10*charLen
         }}
         padding={0.2}
-        colors="dark2"
-        colorBy="id"
+        colors="#8e24aa"
         borderColor="inherit:darker(1.6)"
         axisBottom={{
             "tickSize": 5,
@@ -34,7 +41,7 @@ const Plot = (props) => {
         }}
         labelSkipWidth={12}
         labelSkipHeight={12}
-        labelTextColor="inherit:darker(1.6)"
+        labelTextColor="white"
         animate={true}
         motionStiffness={90}
         motionDamping={15}
@@ -53,11 +60,11 @@ class ResultsPage extends React.Component{
     componentDidUpdate() {
       if(this.props.authData && this.props.authData.getSignInUserSession && this.state.needFetchData) this.updateData()
     }
-    updateData() {
+    async updateData() {
       this.setState({needFetchData:false})
       console.log("GettingData")
       //var token = this.props.authData.getSession()
-      var options = {
+      var resOptions = {
         uri: `https://pvyeeoatp7.execute-api.us-east-1.amazonaws.com/Alpha/${this.props.match.params.id}/results`,
         headers: {
             'User-Agent': 'Request-Promise',
@@ -65,24 +72,62 @@ class ResultsPage extends React.Component{
         },
         json: true // Automatically parses the JSON string in the response
       };
-      rp(options)
-      .then(data => {
-        data.results.sort((a,b) => a.votes - b.votes)
-        this.setState({data:data})
-        console.log("GotData")
-      }).catch(err =>{
+
+      var infoOptions = {
+        uri: `https://pvyeeoatp7.execute-api.us-east-1.amazonaws.com/Alpha/${this.props.match.params.id}`,
+        headers: {
+            'User-Agent': 'Request-Promise',
+            'auth':this.props.authData.getSignInUserSession().accessToken.jwtToken
+        },
+        json: true // Automatically parses the JSON string in the response
+      };
+
+      let resPromise = rp(resOptions)
+      let infoPromise = rp(infoOptions)
+      try {
+      let res = await resPromise
+      let info = await infoPromise
+      res.results.sort((a,b) => a.votes - b.votes)
+      this.setState({data:res,info:info})
+      console.log("GotData")
+      
+      }catch(err) {
         console.log(err)
-      })
+      }
       
       
     }
     render(){
+
+      let {info,data} = this.state
+
+      
+
+      if(!data) {
+        return <>
+          <Typography variant="h2" gutterBottom>Loading {this.props.match.params.id}</Typography>
+          <LinearProgress />
+        </>
+      }
+
+      let t = new Date(info.time)
+      let day = t.getDate();
+      let month = monthNames[t.getMonth()]//toDateString().match(/ [a-zA-Z]*/)[0].replace(" ","");
+      let year = t.getFullYear();
+      
   
       
       return <div>
-        <Typography variant="h2" gutterBottom>Election</Typography>
+        <Typography variant="h2" gutterBottom>Election: {info.name}
+          <IconButton color='secondary'  onClick={this.updateData.bind(this)}>
+            <RefreshIcon />
+          </IconButton>
+          </Typography> 
+        <Typography variant="subtitle1" gutterBottom >Created: {month} {day}, {year} </Typography>
+        <Typography variant="h6" gutterBottom>{data['vote-count']} Votes</Typography>
         
-        {this.state.data && <Plot data={this.state.data.results} keys={this.state.data.results.map(e => e.name)}/>}
+        
+        {data && <Plot data={data.results} keys={data.results.map(e => e.name)}/>}
         </div>;
     }
   }

@@ -35,6 +35,12 @@ function ordinal_suffix_of(i) {
   return i + "th";
 }
 
+const ampTheme = {
+  sectionHeader: {},
+  button: { 'backgroundColor': '#8e24aa' },
+  a: {'color':'#8e24aa'}
+}
+
 const DragHandle = SortableHandle(() => <DragIcon></DragIcon>);
 
 const SortableItem = SortableElement(({value, idx}) =>
@@ -43,7 +49,7 @@ const SortableItem = SortableElement(({value, idx}) =>
 
 const SortableList = SortableContainer(({items}) => {
   return (
-    <List  style={{maxHeight: '100vh', overflow: 'scroll'}}>
+    <List  style={{ overflow: 'scroll'}}>
       {items.map((value, index) => (
         <SortableItem key={`item-${index}`} index={index} idx={index} value={<div>{value}</div>}/ >
       ))}
@@ -56,7 +62,7 @@ const InitialItem = ({value, idx, click}) => <Paper style={{margin:15}}><ListIte
 
 const InitialList = ({items, handleClick}) => {
   return (
-    <List style={{height: '70vh', overflow: 'scroll'}}>
+    <List style={{overflow: 'scroll'}}>
       {items.map((value, index) => (
         <InitialItem key={`item-${index}`} index={index} idx={index} click={() => handleClick(index)}value={value}/ >
       ))}
@@ -82,7 +88,7 @@ const FinalList = ({items}) => {
 
 class SortableComponent extends Component {
   render() {
-    return <SortableList items={this.props.items} onSortEnd={this.props.onSortEnd} useDragHandle={true}/>;
+    return <SortableList useWindowAsScrollContainer items={this.props.items} onSortEnd={this.props.onSortEnd} useDragHandle={true}/>;
   }
 }
 
@@ -194,7 +200,7 @@ class VoteFlow extends React.Component {
     </Stepper>
     
     {this.state.activeStep === 0 && <>
-      <Typography variant="subheading" >Make your {ordinal_suffix_of(this.state.vote.length+1)} place choice:</Typography>
+      <Typography variant="subheading">Make your {ordinal_suffix_of(this.state.vote.length+1)} place choice:</Typography>
       <SelectComponent handleClick={this.selectOption.bind(this)}items={this.state.candidates}/>
       </>
     }
@@ -309,7 +315,7 @@ class VotePage extends React.Component{
         </div>
       }
       let ret = <VoteFlow name="vote" data={this.state.data} handleVote={(vote,tok) => this.vote(vote,tok)}/> 
-      if (this.state.data.secure) return <Authenticator>{ret}</Authenticator>;
+      if (this.state.data.secure) return <Authenticator theme={ampTheme}>{ret}</Authenticator>;
       return ret;
 
     }

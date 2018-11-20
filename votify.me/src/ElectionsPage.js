@@ -25,29 +25,32 @@ const styles = theme => ({
     flexGrow: 1,
   }
 });
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
 
-const ElectList = (props) => {
-    console.log(JSON.stringify(props));
-    const listItems = props.elections.map((elem) =>
-        <li key={elem.id}><Link to={`elections/${elem.id}`}>{elem.name}</Link></li>
-    );
-    return <ul>
-       {listItems}
-    </ul>
+function timeSince(timeStamp) {
+  var now = new Date(),
+  secondsPast = (now.getTime() - timeStamp) / 1000;
+  if(secondsPast <= 60){
+    return `${parseInt(secondsPast)} Seconds ago`;
+  }
+  if(secondsPast <= 3600){
+    return `${parseInt(secondsPast/60)} Minutes ago`;
+  }
+  if(secondsPast <= 86400){
+    return `${parseInt(secondsPast/3600)} Hours ago`;
+  }
+  if(secondsPast > 86400){
+    let t = new Date(timeStamp)
+    let day = t.getDate();
+    let month = monthNames[t.getMonth()]//toDateString().match(/ [a-zA-Z]*/)[0].replace(" ","");
+    let year = t.getFullYear() === now.getFullYear() ? "" :  " "+t.getFullYear();
+    return `${month} ${day} ${year}`;
+  }
 }
 
-const InitialItem = ({value, idx, click}) => <ListItem button onClick ={click}><ListItemText primary={value} /></ListItem>
 
-
-const InitialList = ({elections, handleClick}) => {
-  return (
-    <List>
-      {elections.map((value, index) => (
-        <ListItem key={index} button onClick ={() => handleClick(index.id)}><ListItemText primary={value.name} /></ListItem>
-      ))}
-    </List>
-  );
-};
 
 class ElectionItem extends React.Component {
   constructor(props) {
@@ -69,7 +72,7 @@ class ElectionItem extends React.Component {
 
 
   render() {
-    let {id,name} = this.props;
+    let {id,name,time} = this.props;
     let {host} = window.location;
 
     let field = <ClickAwayListener onClickAway={this.turnOff.bind(this)}><TextField
@@ -78,21 +81,21 @@ class ElectionItem extends React.Component {
           style={{width:225}}
           InputProps={{
             readOnly: true,
-            shrink:true
+            shrink:'true'
           }}
           inputRef={input => {if(input) {input.focus(); input.select()}}}
         /></ClickAwayListener>
     
 
-    return <ListItem button divider component={Link} to={`elections/${id}`}>
-    <ListItemText primary={name} />
+    return <ListItem button divider component={Link} to={`/elections/${id}`}>
+    <ListItemText primary={name} secondary={timeSince(time)} />
     <ListItemSecondaryAction>
     {this.state.linkActive && field}
     
       <IconButton color='primary' aria-label="Vote Link" onClick={this.flipActive.bind(this)}>
         <LinkIcon />
       </IconButton>
-      <IconButton color='primary' aria-label="Vote" component={Link} to={`vote/${id}`}>
+      <IconButton color='primary' aria-label="Vote" component={Link} to={`/vote/${id}`}>
         <HowToVoteIcon />
       </IconButton>
       
@@ -127,6 +130,7 @@ class ElectionsPage extends React.Component{
       };
       rp(options)
       .then(data => {
+        data.elections.sort((a,b) => b.time-a.time)
         this.setState({data:data})
         console.log("GotData")
       }).catch(err =>{
@@ -152,11 +156,12 @@ class ElectionsPage extends React.Component{
       </List> 
       return <div className={classes.root}>
             <Typography variant="h2" gutterBottom>Your Elections</Typography>
-        
-            {this.state.data && list}
+
             <Button color='primary' component={Link} to={`/add-election`}>
             Create New
             </Button>
+            {this.state.data && list}
+            
         </div>;
     }
   }
