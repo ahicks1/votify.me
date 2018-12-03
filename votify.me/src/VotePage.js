@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import {SortableContainer, SortableElement,
   SortableHandle, arrayMove} from 'react-sortable-hoc';
-import { withAuthenticator, Authenticator } from 'aws-amplify-react';
+import { Authenticator } from 'aws-amplify-react';
+import { ConfirmSignIn, ConfirmSignUp, ForgotPassword, RequireNewPassword, SignIn, VerifyContact} from 'aws-amplify-react';
 
 import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List';
@@ -18,7 +19,11 @@ import Typography from '@material-ui/core/Typography';
 
 import DragIcon from '@material-ui/icons/DragIndicator';
 
+import SignUp from './CustomSignup'
+
 const rp = require('request-promise-native')
+
+
 
 function ordinal_suffix_of(i) {
   var j = i % 10,
@@ -315,7 +320,16 @@ class VotePage extends React.Component{
         </div>
       }
       let ret = <VoteFlow name="vote" data={this.state.data} handleVote={(vote,tok) => this.vote(vote,tok)}/> 
-      if (this.state.data.secure) return <Authenticator theme={ampTheme}>{ret}</Authenticator>;
+      if (this.state.data.secure) return <Authenticator theme={ampTheme}>
+      <SignIn/>
+      <SignUp/>
+      <ConfirmSignIn/>
+      <VerifyContact/>
+      <ConfirmSignUp/>
+      <ForgotPassword/>
+      <RequireNewPassword />
+      {ret}
+      </Authenticator>;
       return ret;
 
     }

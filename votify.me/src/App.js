@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, withRouter, Redirect } from 'react-router-dom';
 import Amplify, { Auth } from 'aws-amplify';
-import { withAuthenticator, Authenticator } from 'aws-amplify-react';
+import { Authenticator } from 'aws-amplify-react';
+import { ConfirmSignIn, ConfirmSignUp, ForgotPassword, RequireNewPassword, SignIn, VerifyContact} from 'aws-amplify-react';
+
 import './App.css';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -21,7 +23,7 @@ import ResultsPage from './ResultsPage'
 import AddElectionPage from './AddElectionPage'
 import VotePage from './VotePage'
 import ThanksPage from './ThanksPage'
-
+import SignUp from './CustomSignup'
 
 
 Amplify.configure({
@@ -93,6 +95,7 @@ function withGrid(WrappedComponent) {
 
 
 
+
 class Home extends React.Component { 
   constructor(props) {
     super(props);
@@ -119,25 +122,53 @@ const SignInPage = (props) => {
   return <div>{props.authData && <div> <Redirect to='/elections'/> </div>}</div>
 }
 const SignInAuth = (props) => {
-  return <Authenticator theme={ampTheme}>
+  return <Authenticator hideDefault={true} theme={ampTheme}>
+    <SignIn/>
+    <SignUp/>
+    <ConfirmSignIn/>
+    <VerifyContact/>
+    <ConfirmSignUp/>
+    <ForgotPassword/>
+    <RequireNewPassword />
     <SignInPage {...props}/>
   </Authenticator>;
 }
 
 const AddElectionAuth = (props) => {
-  return withGrid(<Authenticator theme={ampTheme}>
+  return withGrid(<Authenticator  hideDefault={true}  theme={ampTheme}>
+    <SignIn/>
+    <SignUp/>
+    <ConfirmSignIn/>
+    <VerifyContact/>
+    <ConfirmSignUp/>
+    <ForgotPassword/>
+    <RequireNewPassword />
     <AddElectionPage {...props}/>
   </Authenticator>);
 }
 
 const ElectionsAuth = (props) => {
-  return withGrid(<Authenticator theme={ampTheme}>
+  return withGrid(<Authenticator  hideDefault={true} theme={ampTheme}>
+    <SignIn/>
+    <SignUp/>
+    <ConfirmSignIn/>
+    <VerifyContact/>
+    <ConfirmSignUp/>
+    <ForgotPassword/>
+    <RequireNewPassword />
     <ElectionsPage {...props}/>
   </Authenticator>);
 }
 
 const ResultsAuth = (props) => {
-  return withGrid(<Authenticator theme={ampTheme}>
+  return withGrid(<Authenticator  hideDefault={true} theme={ampTheme}>
+    <SignIn/>
+    <SignUp/>
+    <ConfirmSignIn/>
+    <VerifyContact/>
+    <ConfirmSignUp/>
+    <ForgotPassword/>
+    <RequireNewPassword />
     <ResultsPage {...props}/>
   </Authenticator>);
 }

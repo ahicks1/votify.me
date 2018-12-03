@@ -34,7 +34,7 @@ const FinalList = ({items}) => {
   return (
     <div>
       {items.map((value, index) => (
-        <Typography gutterBottom variant="h5" key={`item-${index}`} >#{index+1} - {value}</Typography>
+        <Typography style={{marginTop:15}} variant="subheading" key={`item-${index}`} >#{index+1} - {value}</Typography>
       ))}
     </div>
   );
@@ -92,7 +92,7 @@ class AddElectionPage extends React.Component{
         },
         body: {
           name:this.state.name,
-          candidates:this.state.fields,
+          candidates:this.state.fields.filter(e => e !== ""),
           secure:this.state.authVote
         },
         json: true // Automatically parses the JSON string in the response
@@ -208,7 +208,7 @@ class AddElectionPage extends React.Component{
         {this.state.activeStep === 2 && <div> 
           <Typography variant="h4" gutterBottom>Does this look right?</Typography>
           <Typography variant="h5" gutterBottom>{this.state.name}:</Typography>
-          <FinalList items={this.state.fields}></FinalList>
+          <FinalList items={this.state.fields.filter(e => e !== "")}></FinalList>
           <Button onClick={this.handleBack}  >Back</Button><Button onClick={e => this.addElection()} color="primary" >Create Election</Button>
           </div>
         }

@@ -7,6 +7,8 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import IconButton from '@material-ui/core/IconButton'
 
 import RefreshIcon from '@material-ui/icons/Refresh'
+import SaveIcon from '@material-ui/icons/SaveAlt'
+import HowToVoteIcon from '@material-ui/icons/HowToVote'
 
 const rp = require('request-promise-native')
 
@@ -96,6 +98,25 @@ class ResultsPage extends React.Component{
       }
       
       
+      
+    }
+
+    downloadData() {
+      let {info,data} = this.state;
+      let csvData = "Name, Votes\n" + data.results.map(r => `"${r.name}", ${r.votes}`).join("\n")
+      let blob = new Blob([csvData], {type: 'text/csv'});
+      if(window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, info.name);
+      }
+      else{
+        var elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = info.name;
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
+      }
+
     }
     render(){
 
@@ -123,7 +144,14 @@ class ResultsPage extends React.Component{
             <RefreshIcon />
           </IconButton>
           </Typography> 
-        <Typography variant="subtitle1" gutterBottom >Created: {month} {day}, {year} </Typography>
+          
+        <Typography variant="subtitle1" gutterBottom >
+        <IconButton color='primary' aria-label="Vote" component={Link} to={`/vote/${this.props.match.params.id}`}>
+        <HowToVoteIcon />
+        </IconButton>
+        <IconButton color='primary' aria-label="Vote Link" onClick={this.downloadData.bind(this)}>
+        <SaveIcon />
+      </IconButton>Created: {month} {day}, {year} </Typography>
         <Typography variant="h6" gutterBottom>{data['vote-count']} Votes</Typography>
         
         
